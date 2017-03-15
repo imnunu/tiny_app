@@ -9,11 +9,15 @@
 <body>
     <!-- Add your EJS code here -->
     <% include partials/_header %>
-    <p> List of the URLs and shortened forms</p>
-    <ul>
-      <li>https://www.lighthouselabs.ca/<a href="https://www.lighthouselabs.ca/">Lighthouse Labs</a></li>
-      <li>https://www.lighthouselabs.ca/<a href="https://www.lighthouselabs.ca/">Lighthouse Labs</a></li>
-      <li>https://www.lighthouselabs.ca/<a href="https://www.lighthouselabs.ca/">Lighthouse Labs</a></li>
-    </ul>
+  <h1> List of the URLs and shortened forms</h1>
+  <ol>
+    <li>
+      <a href="/urls">URL home Page</a>
+    </li>
+    <li>
+      <a href="/urls/new">add new URL address</a>
+    </li>
+  <p><%= templateVars %></p>
+  </ol>
 </body>
 </html>

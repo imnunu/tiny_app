@@ -10,14 +10,27 @@
     <!-- Add your EJS code here -->
     <% include partials/_header %>
   <h1> List of the URLs and shortened forms</h1>
-  <ol>
+  <ul>
     <li>
       <a href="/urls">URL home Page</a>
     </li>
     <li>
       <a href="/urls/new">add new URL address</a>
     </li>
-  <p><%= templateVars %></p>
+  </ul>
+  <p>this should be where object display</p>
+
+  <ol>
+    <% for (var key in urls) { %>
+      <% if (urls.hasOwnProperty(key)) { %>
+        <li>
+          <a href="/u/<%= key %>"><%= key %></a> ---> <%= urls[key]%>
+          <form method="POST" action="/urls/<%= key %>/delete"> <button>Delete</button></form>
+          <form method="POST" action="/urls/<%= key %>"> <button>Update URL</button></form>
+          <br>
+        </li>
+      <% } %>
+    <% } %>
   </ol>
 </body>
 </html>

@@ -11,14 +11,30 @@
     <% include partials/_header %>
 
   <h1>This is the Page been redirected to shortURL</h1>
-  <ol>
+  <ul>
     <li>
       <a href="/urls">URL home Page</a>
     </li>
     <li>
       <a href="/urls/new">add new URL address</a>
     </li>
+
+  <p>List of URL:</p>
+
+  <ol>
+    <% for (var key in urls) { %>
+      <% if (urls.hasOwnProperty(key)) { %>
+        <li>
+          <a href="/u/<%= key %>"><%= key %></a> ---> <%= urls[key]%>
+          <form method="POST" action="/urls/<%= key %>/delete"> <button>Delete</button></form>
+          <form method="POST" action="/urls/<%= key %>"> <button>Update URL</button></form>
+        </li>
+      <% } %>
+    <% } %>
   </ol>
+  </ul>
+
+
 
 </body>
 </html>

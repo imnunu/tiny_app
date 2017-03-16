@@ -42,13 +42,18 @@ app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect("/urls/" + shortURL);
-  // console.log(req.body);  // debug statement to see POST parameters
-  // res.send('Ok');         // Respond with 'Ok' (we will replace this)
 });
 
 app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect("/urls");
+});
+
+app.post("/urls/:id", (req, res) => {
+  let shortURL = req.params.id;
+  // console.log('url is equal to', shortURL);
+  urlDatabase[shortURL] = req.body.longURL;
+  res.redirect("/urls/" + shortURL);
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -65,6 +70,8 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_show", templateVars);
 });
+
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

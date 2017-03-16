@@ -18,17 +18,15 @@
       <a href="/urls/new">add new URL address</a>
     </li>
   </ul>
-  <p>this should be where object display</p>
-
+  <h1>List of URLs</h1>
   <ol>
     <% for (var key in urls) { %>
       <% if (urls.hasOwnProperty(key)) { %>
-        <li>
+        <p>
           <a href="/u/<%= key %>"><%= key %></a> ---> <%= urls[key]%>
           <form method="POST" action="/urls/<%= key %>/delete"> <button>Delete</button></form>
-          <form method="POST" action="/urls/<%= key %>"> <button>Update URL</button></form>
-          <br>
-        </li>
+         </p>
+
       <% } %>
     <% } %>
   </ol>

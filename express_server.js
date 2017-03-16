@@ -73,6 +73,12 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", {shortURL : shortURL, urls: urlDatabase});
 });
 
+app.post("/login", (req, res)=> {
+  let username = req.body.username;
+  res.cookie('username',username);
+  res.redirect('/urls');
+});
+
 
 
 app.listen(PORT, () => {

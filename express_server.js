@@ -36,7 +36,10 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
   res.render("urls_index", templateVars);
 });
 
@@ -65,12 +68,17 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
-  res.render("urls_show", {shortURL : shortURL, urls: urlDatabase});
+  let username = req.cookies["username"];
+  res.render("urls_show", {shortURL : shortURL, urls: urlDatabase, username: username});
 });
 
 app.post("/login", (req, res)=> {
@@ -84,10 +92,3 @@ app.post("/login", (req, res)=> {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
-
-
-
-
-
-

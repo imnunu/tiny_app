@@ -24,7 +24,9 @@
       <% if (urls.hasOwnProperty(key)) { %>
         <p>
           <a href="/u/<%= key %>"><%= key %></a> ---> <%= urls[key]%>
+
           <form method="POST" action="/urls/<%= key %>/delete"> <button>Delete</button></form>
+          <a href="/urls/<%= key %>">Edit</a>
          </p>
 
       <% } %>

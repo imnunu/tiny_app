@@ -67,8 +67,8 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = { urls: urlDatabase };
-  res.render("urls_show", templateVars);
+  let shortURL = req.params.id;
+  res.render("urls_show", {shortURL : shortURL, urls: urlDatabase});
 });
 
 

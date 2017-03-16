@@ -9,27 +9,16 @@
 <body>
     <!-- Add your EJS code here -->
     <% include partials/_header %>
-  <ul>
-    <li>
-      <a href="/urls">URL home Page</a>
-    </li>
-    <li>
-      <a href="/urls/new">add new URL address</a>
-    </li>
-  </ul>
-  <ol>
-    <% for (var key in urls) { %>
-      <% if (urls.hasOwnProperty(key)) { %>
-        <li>
-          <a href="/u/<%= key %>"><%= key %></a> ---> <%= urls[key]%>
-          <form action="/urls/<%= key %>" method="POST" style="margin:150px;">
-            <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
+  <h1><b>ShortURL: <a href="/u/<%= shortURL %>">http://u/<%= shortURL %></a></b></h1>
+  <h1>
+
+          <form action="/urls/<%= shortURL %>" method="POST" style="margin:150px;">
+            <input id="longURL" type="text" value="<%= urls[shortURL] %>" name="longURL" placeholder="http://" style="width: 300px">
             <input type="submit" value="Update">
           </form>
-          <br>
-        </li>
-      <% } %>
-    <% } %>
-  </ol>
+  </h1>
+  <h2><a href="/urls">URL home Page</a></h2>
+
+
 </body>
 </html>

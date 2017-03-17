@@ -114,6 +114,7 @@ app.get('/urls/login', (req, res) => {
   res.render('urls_login');
 });
 
+//TODO issue: check valid password function doesn't work, need to fix later
 app.post("/urls/login", (req, res) => {
   if(!isReturnedUser){
     res.status(403).send('Please check your email or password');

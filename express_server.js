@@ -142,11 +142,15 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   let user_id = req.cookies['user_id'];
-  let templateVars = {
-    urls: urlDatabase,
-    user: users[user_id]
-  };
-  res.render("urls_new", templateVars);
+  if (user_id === undefined) {
+    res.redirect('/urls/login');
+  } else {
+    let templateVars = {
+      urls: urlDatabase,
+      user: users[user_id]
+    };
+    res.render("urls_new", templateVars);
+  }
 });
 
 app.post("/logout", (req, res)=> {

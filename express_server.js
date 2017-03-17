@@ -36,41 +36,6 @@ function generateRandomString() {
     return text;
 }
 
-//TODO review this session, still have issue here, same email address register
-function isGoodEmail(user_email) {
-  for (let key in users) {
-    if (users.hasOwnProperty(key)) {
-      if (users[key]['email'] === user_email) {
-        console.log(user_email);
-        return false;
-      }
-    }
-      return true;
-  }
-}
-
-function isRegisterError(user_email, user_password) {
-  if (!user_email || !user_password) {
-    return true;
-  } else if (!isGoodEmail(user_email)) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function isReturnedUser (user_email) {
-  for (let key in users) {
-    if (users.hasOwnProperty(key)) {
-      if ((users[key]['email'] === req.body.email) && (users[key]['password'] === req.body.password)) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-
 app.get("/", (req, res) => {
   res.redirect('/urls');
 });
@@ -91,22 +56,31 @@ app.get("/urls/register", (req, res) => {
   res.render("urls_register", templateVars);
 });
 
+//TODO fix the Error: Can't set headers after they are sent.
 app.post("/urls/register", (req, res) => {
-  let user_id = generateRandomString();
   let user_email = req.body.email;
   let user_password = req.body.password;
-// Handle Registration Errors
-  if (isRegisterError(user_email, user_password)) {
-    res.status(400).send('this email address is not available');
+
+  if (!user_email || !user_password) {
+    res.status(403).send('Please enter email and password for Registration');
   } else {
-    users[user_id] = {};
-    users[user_id]['id'] = user_id;
-    users[user_id]['email'] = user_email;
-    users[user_id]['password'] = user_password;
-    users[user_id] = users[user_id];
-    console.log(users);
-    res.cookie('user_id',user_id);
-    res.redirect("/");
+      let user_id = generateRandomString();
+      let user;
+
+      for (let key in users) {
+        if (users[key].email === req.body.email) {
+          res.status(403).send('This email has been registered, please login.');
+        } else {
+          users[user_id] = {};
+          users[user_id]['id'] = user_id;
+          users[user_id]['email'] = user_email;
+          users[user_id]['password'] = user_password;
+          users[user_id] = users[user_id];
+          console.log(users);
+          res.cookie('user_id',user_id);
+          res.redirect("/");
+          }
+      }
     }
 });
 
@@ -114,20 +88,23 @@ app.get('/urls/login', (req, res) => {
   res.render('urls_login');
 });
 
-//TODO issue: check valid password function doesn't work, need to fix later
+
 app.post("/urls/login", (req, res) => {
-  if(!isReturnedUser){
-    res.status(403).send('Please check your email or password');
-  } else {
-    for (let key in users) {
-      if (users.hasOwnProperty(key)) {
-        if (users[key]['email'] === req.body.email) {
-          res.cookie('user_id',users[key]['id']);
-          res.redirect('/');
-        }
-      }
+  let user;
+  for (let key in users) {
+    if (users[key].email === req.body.email) {
+      user = users[key];
+      break;
     }
   }
+    if (user) {
+      if (user.password === req.body.password) {
+        res.cookie('user_id', user.id);
+        res.redirect('/');
+        return;
+      }
+    }
+    res.status(403).send('Please check your email or password');
 });
 
 app.get("/urls", (req, res) => {

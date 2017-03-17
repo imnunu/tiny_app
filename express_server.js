@@ -9,8 +9,14 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    userID: 'xxxxxx',
+    url: "http://www.lighthouselabs.ca"
+    },
+  "9sm5xK": {
+    userID: 'yyyyyy',
+    url: "http://www.google.com"
+    }
 };
 
 const users = {
@@ -116,9 +122,13 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+//TODO working on this one to add new property into object
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
+  let user_ID = req.cookies['user_id'];
+  urlDatabase[shortURL] = {};
+  urlDatabase[shortURL]['userID'] = user_ID;
+  urlDatabase[shortURL]['url'] = req.body.longURL;
   res.redirect("/urls/" + shortURL);
 });
 

@@ -22,11 +22,12 @@
   <ol>
     <% for (var key in urls) { %>
       <% if (urls.hasOwnProperty(key)) { %>
-        <p>
-          <a href="/u/<%= key %>"><%= key %></a> ---> <%= urls[key]%>
+        <li>
+          <a href="/u/<%= key %>"><%= key %></a> ---> <%= urls[key]['url']%>
           <form method="POST" action="/urls/<%= key %>/delete"> <button>Delete</button></form>
           <a href="/urls/<%= key %>">Edit</a>
-         </p>
+          <br><br>
+        </li>
       <% } %>
     <% } %>
   </ol>

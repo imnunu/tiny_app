@@ -36,6 +36,29 @@ function generateRandomString() {
     return text;
 }
 
+//TODO review this session, still have issue here, same email address register
+function isGoodEmail(user_email) {
+  for (let key in users) {
+    if (users.hasOwnProperty(key)) {
+      if (users[key]['email'] === user_email) {
+        console.log(user_email);
+        return false;
+      }
+    }
+      return true;
+  }
+}
+
+function isRegisterError(user_email, user_password) {
+  if (!user_email || !user_password) {
+    return true;
+  } else if (!isGoodEmail(user_email)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 app.get("/", (req, res) => {
   res.redirect('/urls');
 });
@@ -59,15 +82,21 @@ app.post("/urls/register", (req, res) => {
   let user_id = generateRandomString();
   let user_email = req.body.email;
   let user_password = req.body.password;
-  users[user_id] = {};
-  users[user_id]['id'] = user_id;
-  users[user_id]['email'] = user_email;
-  users[user_id]['password'] = user_password;
-  users[user_id] = users[user_id];
-  console.log(users);
-  res.cookie('user_id',user_id);
-  res.redirect("/");
+// Handle Registration Errors
+  if (isRegisterError(user_email, user_password)) {
+    res.status(400).send('this email address is not available');
+  } else {
+    users[user_id] = {};
+    users[user_id]['id'] = user_id;
+    users[user_id]['email'] = user_email;
+    users[user_id]['password'] = user_password;
+    users[user_id] = users[user_id];
+    console.log(users);
+    res.cookie('user_id',user_id);
+    res.redirect("/");
+    }
 });
+
 
 app.get("/urls", (req, res) => {
   let templateVars = {

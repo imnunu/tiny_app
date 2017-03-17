@@ -59,6 +59,18 @@ function isRegisterError(user_email, user_password) {
   }
 }
 
+function isReturnedUser (user_email) {
+  for (let key in users) {
+    if (users.hasOwnProperty(key)) {
+      if ((users[key]['email'] === req.body.email) && (users[key]['password'] === req.body.password)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+
 app.get("/", (req, res) => {
   res.redirect('/urls');
 });
@@ -71,9 +83,10 @@ app.get("/hello", (req, res) => {
   res.end("<html><body>Hello <b>World</b></body></html>\n");
 });
 app.get("/urls/register", (req, res) => {
+  let user_id = req.cookies['user_id'];
   let templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"]
+    user: users[user_id]
   };
   res.render("urls_register", templateVars);
 });
@@ -97,11 +110,30 @@ app.post("/urls/register", (req, res) => {
     }
 });
 
+app.get('/urls/login', (req, res) => {
+  res.render('urls_login');
+});
+
+app.post("/urls/login", (req, res) => {
+  if(!isReturnedUser){
+    res.status(403).send('Please check your email or password');
+  } else {
+    for (let key in users) {
+      if (users.hasOwnProperty(key)) {
+        if (users[key]['email'] === req.body.email) {
+          res.cookie('user_id',users[key]['id']);
+          res.redirect('/');
+        }
+      }
+    }
+  }
+});
 
 app.get("/urls", (req, res) => {
+  let user_id = req.cookies['user_id'];
   let templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"]
+    user: users[user_id]
   };
   res.render("urls_index", templateVars);
 });
@@ -130,32 +162,26 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-
-
 app.get("/urls/new", (req, res) => {
+  let user_id = req.cookies['user_id'];
   let templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"]
+    user: users[user_id]
   };
   res.render("urls_new", templateVars);
 });
 
-app.post("/login", (req, res)=> {
-  let username = req.body.username;
-  res.cookie('username',username);
-  res.redirect('/urls');
-});
-
 app.post("/logout", (req, res)=> {
-  let username = req.cookies["username"];
-  res.clearCookie("username", username);
+  let user_id = req.cookies["user_id"];
+  res.clearCookie("user_id", user_id);
   res.redirect('/urls');
 });
 
 app.get("/urls/:id", (req, res) => {
+  let user_id = req.cookies['user_id'];
   let shortURL = req.params.id;
-  let username = req.cookies["username"];
-  res.render("urls_show", {shortURL : shortURL, urls: urlDatabase, username: username});
+
+  res.render("urls_show", {shortURL : shortURL, urls: urlDatabase, user: users[user_id]});
 });
 
 app.listen(PORT, () => {

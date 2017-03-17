@@ -64,30 +64,29 @@ app.get("/urls/register", (req, res) => {
 
 //TODO fix the Error: Can't set headers after they are sent.
 app.post("/urls/register", (req, res) => {
-  let user_email = req.body.email;
-  let user_password = req.body.password;
+  const user_email = req.body.email;
+  const user_password = req.body.password;
 
   if (!user_email || !user_password) {
     res.status(403).send('Please enter email and password for Registration');
+    return;
   } else {
-      let user_id = generateRandomString();
-      let user;
-
-      for (let key in users) {
-        if (users[key].email === req.body.email) {
-          res.status(403).send('This email has been registered, please login.');
-        } else {
-          users[user_id] = {};
-          users[user_id]['id'] = user_id;
-          users[user_id]['email'] = user_email;
-          users[user_id]['password'] = user_password;
-          users[user_id] = users[user_id];
-          console.log(users);
-          res.cookie('user_id',user_id);
-          res.redirect("/");
-          }
+    let user_id = generateRandomString();
+    for (let user in users) {
+      if (users[user].email === req.body.email) {
+        res.status(403).send('This email has been registered, please login.');
+        return;
       }
     }
+    users[user_id] = {};
+    users[user_id]['id'] = user_id;
+    users[user_id]['email'] = user_email;
+    users[user_id]['password'] = user_password;
+    console.log(users);
+    res.cookie('user_id',user_id);
+    res.redirect("/");
+
+  }
 });
 
 app.get('/urls/login', (req, res) => {
@@ -149,7 +148,7 @@ app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
-
+//
 app.get("/urls/new", (req, res) => {
   let user_id = req.cookies['user_id'];
   if (user_id === undefined) {

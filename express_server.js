@@ -56,10 +56,17 @@ app.get("/urls/register", (req, res) => {
 });
 
 app.post("/urls/register", (req, res) => {
-  let username = req.body.username;
-  let password = req.body.password;
-  users[username] = password;
-  res.redirect("/urls");
+  let user_id = generateRandomString();
+  let user_email = req.body.email;
+  let user_password = req.body.password;
+  users[user_id] = {};
+  users[user_id]['id'] = user_id;
+  users[user_id]['email'] = user_email;
+  users[user_id]['password'] = user_password;
+  users[user_id] = users[user_id];
+  console.log(users);
+  res.cookie('user_id',user_id);
+  res.redirect("/");
 });
 
 app.get("/urls", (req, res) => {

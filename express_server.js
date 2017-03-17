@@ -133,8 +133,14 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase[req.params.id];
-  res.redirect("/urls");
+  let user_ID = req.cookies['user_id'];
+  let shortURL = req.params.id;
+  if (urlDatabase[shortURL]['userID'] === user_ID) {
+    delete urlDatabase[req.params.id];
+    res.redirect("/urls");
+  } else {
+    res.status(403).send("You are not the owner.");
+    }
 });
 
 app.post("/urls/:id", (req, res) => {

@@ -10,11 +10,11 @@ app.use(cookieParser());
 
 const urlDatabase = {
   "b2xVn2": {
-    userID: 'xxxxxx',
+    userID: 'default',
     url: "http://www.lighthouselabs.ca"
     },
   "9sm5xK": {
-    userID: 'yyyyyy',
+    userID: 'default',
     url: "http://www.google.com"
     }
 };
@@ -111,9 +111,11 @@ app.post("/urls/login", (req, res) => {
     }
     res.status(403).send('Please check your email or password');
 });
-
+//TODO here
 app.get("/urls", (req, res) => {
   let user_id = req.cookies['user_id'];
+
+
   let templateVars = {
     urls: urlDatabase,
     user: users[user_id]
@@ -121,7 +123,7 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-//TODO working on this one to add new property into object
+
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   let user_ID = req.cookies['user_id'];
@@ -130,6 +132,20 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortURL]['url'] = req.body.longURL;
   console.log(urlDatabase[shortURL]);
   res.redirect("/urls/" + shortURL);
+});
+
+// located between app.post("/urls" and app.post("/urls/:id/delete"
+app.get("/urls/new", (req, res) => {
+  let user_id = req.cookies['user_id'];
+  if (user_id === undefined) {
+    res.redirect('/urls/login');
+  } else {
+    let templateVars = {
+      urls: urlDatabase,
+      user: users[user_id]
+    };
+    res.render("urls_new", templateVars);
+  }
 });
 
 app.post("/urls/:id/delete", (req, res) => {
@@ -144,30 +160,52 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post("/urls/:id", (req, res) => {
-  let shortURL = req.params.id;
-  // console.log('url is equal to', shortURL);
-  urlDatabase[shortURL] = req.body.longURL;
-  res.redirect("/urls/" + shortURL);
-});
+  let user_id = req.cookies["user_id"];
+  if (user_id === undefined) {
+    res.redirect('/login');
+  } else {
+      let shortURL = req.params.id;
+      let longURL = req.body.longURL;
+      if (urlDatabase[shortURL]["userID"] === user_id) {
+        urlDatabase[shortURL]["url"] = longURL;
+        res.redirect('/urls');
+      }
+    }
+  });
 
-app.get("/u/:shortURL", (req, res) => {
-  // let longURL = ...
-  let longURL = urlDatabase[req.params.shortURL];
-  res.redirect(longURL);
-});
-//
-app.get("/urls/new", (req, res) => {
+
+
+// after update the url, wont display the new longURL address, and I became not the owner!
+// and url/u/<shortURL>  --- too many redirects
+
+
+app.get("/urls/:id", (req, res) => {
   let user_id = req.cookies['user_id'];
   if (user_id === undefined) {
-    res.redirect('/urls/login');
-  } else {
-    let templateVars = {
-      urls: urlDatabase,
-      user: users[user_id]
-    };
-    res.render("urls_new", templateVars);
+    res.redirect('/login');
+  }
+    let shortURL = req.params.id;
+    if (urlDatabase[shortURL]["userID"] === user_id) {
+      let templateVars = {
+        shortURL: shortURL,
+        urls: urlDatabase,
+        user: users[user_id]
+         };
+        res.render("urls_show", templateVars);
+      }
+});
+
+
+//TODO
+app.get("/u/:shortURL", (req, res) => {
+  if (urlDatabase[req.params.shortURL]) {
+  let longURL = urlDatabase[req.params.shortURL]['url'];
+  res.redirect(longURL);
   }
 });
+
+
+
 
 app.post("/logout", (req, res)=> {
   let user_id = req.cookies["user_id"];
@@ -175,12 +213,11 @@ app.post("/logout", (req, res)=> {
   res.redirect('/urls');
 });
 
-app.get("/urls/:id", (req, res) => {
-  let user_id = req.cookies['user_id'];
-  let shortURL = req.params.id;
 
-  res.render("urls_show", {shortURL : shortURL, urls: urlDatabase, user: users[user_id]});
-});
+
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

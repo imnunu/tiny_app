@@ -62,12 +62,12 @@ app.get("/hello", (req, res) => {
   res.end("<html><body>Hello <b>World</b></body></html>\n");
 });
 app.get("/urls/register", (req, res) => {
-  let user_id = req.cookies['user_id'];
-  let templateVars = {
-    urls: urlDatabase,
-    user: users[user_id]
-  };
-  res.render("urls_register", templateVars);
+  // let user_id = req.session.user_id;
+  // let templateVars = {
+  //   urls: urlDatabase,
+  //   user: users[user_id]
+  // };
+  res.render("urls_register");
 });
 
 //TODO fix the Error: Can't set headers after they are sent.
@@ -91,7 +91,7 @@ app.post("/urls/register", (req, res) => {
     users[user_id]['email'] = user_email;
     users[user_id]['password'] = user_password;
     console.log(users);
-    res.cookie('user_id',user_id);
+    req.session.user_id = user_id;
     res.redirect("/");
 
   }
@@ -112,7 +112,7 @@ app.post("/urls/login", (req, res) => {
   }
     if (user) {
       if (user.password === req.body.password) {
-        res.cookie('user_id', user.id);
+        req.session.user_id = user_id;
         res.redirect('/');
         return;
       }
@@ -121,7 +121,7 @@ app.post("/urls/login", (req, res) => {
 });
 //TODO here
 app.get("/urls", (req, res) => {
-  let user_id = req.cookies['user_id'];
+  let user_id = req.session.user_id;
 
 
   let templateVars = {
@@ -134,7 +134,7 @@ app.get("/urls", (req, res) => {
 
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
-  let user_ID = req.cookies['user_id'];
+  let user_ID = req.session.user_id;
   urlDatabase[shortURL] = {};
   urlDatabase[shortURL]['userID'] = user_ID;
   urlDatabase[shortURL]['url'] = req.body.longURL;
@@ -142,9 +142,8 @@ app.post("/urls", (req, res) => {
   res.redirect("/urls/" + shortURL);
 });
 
-// located between app.post("/urls" and app.post("/urls/:id/delete"
 app.get("/urls/new", (req, res) => {
-  let user_id = req.cookies['user_id'];
+  let user_id = req.session.user_id;
   if (user_id === undefined) {
     res.redirect('/urls/login');
   } else {
@@ -157,7 +156,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  let user_ID = req.cookies['user_id'];
+  let user_ID = req.session.user_id;
   let shortURL = req.params.id;
   if (urlDatabase[shortURL]['userID'] === user_ID) {
     delete urlDatabase[req.params.id];
@@ -168,7 +167,7 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post("/urls/:id", (req, res) => {
-  let user_id = req.cookies["user_id"];
+  let user_id = req.session.user_id;
   if (user_id === undefined) {
     res.redirect('/login');
   } else {
@@ -182,13 +181,8 @@ app.post("/urls/:id", (req, res) => {
   });
 
 
-
-// after update the url, wont display the new longURL address, and I became not the owner!
-// and url/u/<shortURL>  --- too many redirects
-
-
 app.get("/urls/:id", (req, res) => {
-  let user_id = req.cookies['user_id'];
+  let user_id = req.session.user_id;
   if (user_id === undefined) {
     res.redirect('/login');
   }
@@ -203,7 +197,6 @@ app.get("/urls/:id", (req, res) => {
       }
 });
 
-
 //TODO
 app.get("/u/:shortURL", (req, res) => {
   if (urlDatabase[req.params.shortURL]) {
@@ -212,20 +205,11 @@ app.get("/u/:shortURL", (req, res) => {
   }
 });
 
-
-
-
 app.post("/logout", (req, res)=> {
-  let user_id = req.cookies["user_id"];
-  res.clearCookie("user_id", user_id);
+
+  delete req.session.user_id;
   res.redirect('/urls');
 });
-
-
-
-
-
-
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

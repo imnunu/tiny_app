@@ -140,7 +140,7 @@ app.get("/urls", (req, res) => {
     let templateVars = {
       urls: userDB,
       user_id: user_id,
-      
+      username: users[user_id]
     }
     res.status(200);
     res.render('urls_index', templateVars);
@@ -169,7 +169,8 @@ app.get("/urls/new", (req, res) => {
   } else {
     let templateVars = {
       user_id: user_id,
-      
+      users:urlDatabase,
+      username: users[user_id]
     };
     res.render("urls_new", templateVars);
   }
@@ -217,7 +218,8 @@ app.get("/urls/:id", (req, res) => {
           loggedUser: req.session.user_id,
           shortURL: shortURL,
           user_id: user_id,
-          
+          users:urlDatabase,
+          username: users[user_id]
         };
         res.render('urls_show', templateVars);
   } else {

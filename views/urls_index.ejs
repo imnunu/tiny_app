@@ -1,33 +1,32 @@
 <!-- views/partials/header.ejs -->
-
+<% include partials/_header %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+  <link rel="stylesheet" href="/main.css" type="text/css"/>
   <title>TinyApp</title>
 </head>
 <body>
     <!-- Add your EJS code here -->
-    <% include partials/_header %>
-  <h1> List of the URLs and shortened forms</h1>
-  <ul>
-    <li>
-      <a href="/urls">URL home Page</a>
-    </li>
-    <li>
-      <a href="/urls/new">add new URL address</a>
-    </li>
-  </ul>
+
   <h1>List of URLs</h1>
+<ul>
+  <li><a href="/urls/new">Create a New Short Link</a></li>
+</ul>
+<br>
+
   <ol>
     <% for (var key in urls) { %>
       <% if (urls.hasOwnProperty(key)) { %>
-        <li>
+      <li>
           <a href="/u/<%= key %>"><%= key %></a> ===> <%= urls[key]['url']%>
-          <form method="POST" action="/urls/<%= key %>/delete"> <button>Delete</button></form>
-          <a href="/urls/<%= key %>">Edit</a>
+          <form id='delete_btn' method="POST" action="/urls/<%=key%>/delete"> <button>Delete</button></form>
+      
+          <form id="edit_btn" method="GET" action="/urls/<%=key%>">
+          <input type="submit" id="<%=key%>" name="<%=key%>" value="Edit"></form>
+        
           <br><br>
-        </li>
+      </li>
       <% } %>
     <% } %>
   </ol>

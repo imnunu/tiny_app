@@ -1,10 +1,11 @@
 <!doctype html>
 <html>
   <head>
+  <link rel="stylesheet" href="/main.css" type="text/css"/>
   </head>
   <body>
     <h1>Please Log In</h1>
-    <form action="/urls/login" method="post">
+    <form action="/login" method="post">
       <p>
         <label for="email">Email</label>
         <input id="email" type="email" name="email" placeholder="youremail@example.com" style="width: 150px">
@@ -17,5 +18,7 @@
         <button type='submit'>Log In</button>
       </p>
     </form>
+    <p>No Account?  <a href="/register">Register Now</a></p>
+    
   </body>
 </html>

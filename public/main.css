@@ -1,0 +1,16 @@
+body {
+    background-color: #B2DBBF;
+    color: #247BA0;
+    padding: 50px;
+
+}
+
+#delete_btn {
+    display: inline;
+
+}
+
+#edit_btn {
+    display: inline;
+
+}

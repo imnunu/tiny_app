@@ -1,17 +1,23 @@
 <head>
   <title>TinyApp</title>
+  <link rel="stylesheet" href="/main.css" type="text/css"/>
+
 </head>
 
-<% if (user !== undefined) {%>
- <h2>Welcome, You login as  <%= user["email"] %> </h2>
- <br>
-<form action="/logout" method="POST">
-  <input type="submit" name="logout" value="logout">
-</form>
+<% if (!user_id) {%>
+  <a href="/register">Register Now</a>
+&nbsp;
+&nbsp;
+&nbsp;
+  <a href="/login">Already registered? Login Here</a>
+
+
 <% } else { %>
-<a href="/urls/register">Register Now</a>
-&nbsp;
-&nbsp;
-&nbsp;
-<a href="/urls/login">Already registered? Login Here</a>
+  <h2>Welcome, You login as    email   </h2>
+  
+  <br>
+  <form action="/logout" method="POST">
+  <input type="submit" name="logout" value="logout">
+  </form>
+
 <% } %>

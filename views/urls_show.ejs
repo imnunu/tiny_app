@@ -1,19 +1,17 @@
-<!-- views/partials/header.ejs -->
-<% include partials/_header %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="/main.css" type="text/css"/> 
+  <link rel="stylesheet" href="/main.css" type="text/css"/>
   <title>TinyApp</title>
+      <% include partials/_header %>
 </head>
 <body>
     <!-- Add your EJS code here -->
-    
-  <h1><b>ShortURL: <a href="/u/<%= shortURL %>">http://u/<%= shortURL %></a></b></h1>
+    <h1><b>ShortURL: <a href="/u/<%= shortURL %>">http://u/<%= shortURL %></a></b></h1>
           <form action="/urls/<%= shortURL %>" method="POST" style="margin:150px;">
-            <input id="updatedlongURL" type="text" name="updatedlongURL" placeholder="http://" style="width: 300px">
-            <input type="submit" value="Update">
+          <input id="updatedlongURL" type="text" name="updatedlongURL" placeholder="http://" style="width: 300px">
+          <input type="submit" value="Update">
           </form>
-  <h2><a href="/urls">URL home Page</a></h2>
+    <h2><a href="/urls">URL home Page</a></h2>
 </body>
 </html>

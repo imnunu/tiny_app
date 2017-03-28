@@ -1,17 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
-
 app.use(express.static('public'));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
   keys: ['superpass'],
@@ -72,7 +68,7 @@ app.get("/register", (req, res) => {
   }
 });
 
-//TODO fix the Error: Can't set headers after they are sent.
+
 app.post("/register", (req, res) => {
   const user_email = req.body.email;
   const password = req.body.password;
@@ -124,19 +120,19 @@ app.post("/login", (req, res) => {
     res.status(401).send('Please check your email or password');
 });
 
-//TODO here
+
 app.get("/urls", (req, res) => {
   let user_id = req.session.user_id;
   let userDB = {};
   if (!user_id) {
     res.status(401).redirect('/login');
     return;
-  } 
+  }
   for (let key in urlDatabase) {
     if (user_id === urlDatabase[key]["userID"]) {
       userDB[key] = urlDatabase[key];
     }
-} 
+}
     let templateVars = {
       urls: userDB,
       user_id: user_id,
@@ -144,7 +140,7 @@ app.get("/urls", (req, res) => {
     }
     res.status(200);
     res.render('urls_index', templateVars);
-     
+
 });
 
 
@@ -202,7 +198,7 @@ app.post("/urls/:id", (req, res) => {
         res.status(403).send("Sorry, You are not the owner");
       }
   });
-    
+
 
 app.get("/urls/:id", (req, res) => {
   let user_id = req.session.user_id;
@@ -226,7 +222,7 @@ app.get("/urls/:id", (req, res) => {
     res.status(403).send('Sorry, you are not the owner')
     }
   });
-  
+
 
 
 app.get("/u/:id", (req, res) => {
@@ -238,7 +234,7 @@ app.get("/u/:id", (req, res) => {
   }
 });
 
-//TODO
+
 app.get("/u/:shortURL", (req, res) => {
   if (urlDatabase[req.params.shortURL]) {
   let longURL = urlDatabase[req.params.shortURL]['url'];

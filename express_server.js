@@ -228,6 +228,10 @@ app.get("/urls/:id", (req, res) => {
 app.get("/u/:id", (req, res) => {
   if (urlDatabase[req.params.id]) {
     let longURL = urlDatabase[req.params.id]['url'];
+    var prefix = 'http://';
+    if (longURL.substr(0, prefix.length) !== prefix){
+      longURL = prefix + longURL;
+    }
     res.redirect(longURL);
   } else {
     res.status(404).send('This url doesn\nt exist');
@@ -238,6 +242,10 @@ app.get("/u/:id", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   if (urlDatabase[req.params.shortURL]) {
     let longURL = urlDatabase[req.params.shortURL]['url'];
+    var prefix = 'http://';
+    if (longURL.substr(0, prefix.length) !== prefix){
+      longURL = prefix + longURL;
+    }
     res.redirect(longURL);
   }
 });

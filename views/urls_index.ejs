@@ -1,10 +1,10 @@
-<!-- views/partials/header.ejs -->
-<% include partials/_header %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <% include partials/_header %>
   <link rel="stylesheet" href="/main.css" type="text/css"/>
   <title>TinyApp</title>
+  <meta content="text/html; charset=utf-8"/>
 </head>
 <body>
     <!-- Add your EJS code here -->
@@ -21,10 +21,10 @@
       <li>
           <a href="/u/<%= key %>"><%= key %></a> ===> <%= urls[key]['url']%>
           <form id='delete_btn' method="POST" action="/urls/<%=key%>/delete"> <button>Delete</button></form>
-      
+
           <form id="edit_btn" method="GET" action="/urls/<%=key%>">
           <input type="submit" id="<%=key%>" name="<%=key%>" value="Edit"></form>
-        
+
           <br><br>
       </li>
       <% } %>

@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,20 +9,21 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static('public'));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
-  keys: ['superpass'],
-}))
+  keys: ['superpass']
+}));
 
 const urlDatabase = {
   "b2xVn2": {
     userID: 'default',
     url: "http://www.lighthouselabs.ca"
-    },
+  },
   "9sm5xK": {
     userID: 'default',
     url: "http://www.google.com"
-    }
+  }
 };
 
 const users = {
@@ -30,21 +32,19 @@ const users = {
     email: "bilu@example.com",
     password: "purple-monkey-dinosaur"
   },
- "nd7Hdc": {
-    id: "nd7Hdc",
-    email: "dan@example.com",
-    password: "dishwasher-funk"
-  }
+  id: "nd7Hdc",
+  email: "dan@example.com",
+  password: "dishwasher-funk"
 };
 
 function generateRandomString() {
   let text = "";
   let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    for(let i = 0; i < 6; i ++ ) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
+  for(let i = 0; i < 6; i ++ ) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 }
 
 
@@ -54,9 +54,9 @@ app.get("/", (req, res) => {
   let user_id = req.session.user_id;
   if (!user_id) {
     res.redirect('/login');
-    } else {
-      res.redirect('/urls');
-    }
+  } else {
+    res.redirect('/urls');
+  }
 });
 
 app.get("/register", (req, res) => {
@@ -99,9 +99,9 @@ app.get('/login', (req, res) => {
   let user_id = req.session.user_id;
   if (!user_id) {
     res.render('login');
-    } else {
-      res.redirect('/');
-    }
+  } else {
+    res.redirect('/');
+  }
 });
 
 
@@ -117,7 +117,7 @@ app.post("/login", (req, res) => {
       return;
     }
   }
-    res.status(401).send('Please check your email or password');
+  res.status(401).send('Please check your email or password');
 });
 
 
@@ -132,14 +132,14 @@ app.get("/urls", (req, res) => {
     if (user_id === urlDatabase[key]["userID"]) {
       userDB[key] = urlDatabase[key];
     }
-}
-    let templateVars = {
-      urls: userDB,
-      user_id: user_id,
-      username: users[user_id]
-    }
-    res.status(200);
-    res.render('urls_index', templateVars);
+  }
+  let templateVars = {
+    urls: userDB,
+    user_id: user_id,
+    username: users[user_id]
+  };
+  res.status(200);
+  res.render('urls_index', templateVars);
 
 });
 
@@ -150,10 +150,10 @@ app.post("/urls", (req, res) => {
   if (!user_id) {
     res.status(401).redirect('/login');
   } else {
-  urlDatabase[shortURL] = {};
-  urlDatabase[shortURL]['userID'] = user_id;
-  urlDatabase[shortURL]['url'] = req.body.longURL;
-  res.redirect("/urls/" + shortURL);
+    urlDatabase[shortURL] = {};
+    urlDatabase[shortURL]['userID'] = user_id;
+    urlDatabase[shortURL]['url'] = req.body.longURL;
+    res.redirect("/urls/" + shortURL);
   }
 });
 
@@ -165,7 +165,7 @@ app.get("/urls/new", (req, res) => {
   } else {
     let templateVars = {
       user_id: user_id,
-      users:urlDatabase,
+      users: urlDatabase,
       username: users[user_id]
     };
     res.render("urls_new", templateVars);
@@ -180,7 +180,7 @@ app.post("/urls/:id/delete", (req, res) => {
     res.redirect("/urls");
   } else {
     res.status(403).send("You are not the owner.");
-    }
+  }
 });
 
 app.post("/urls/:id", (req, res) => {
@@ -192,12 +192,12 @@ app.post("/urls/:id", (req, res) => {
   } else if (!user_id) {
     res.status(401).redirect('/login');
   } else if (urlDatabase[shortURL]["userID"] === user_id) {
-      urlDatabase[shortURL]["url"] = longURL;
-      res.redirect("/urls/" + shortURL);
-      } else {
-        res.status(403).send("Sorry, You are not the owner");
-      }
-  });
+    urlDatabase[shortURL]["url"] = longURL;
+    res.redirect("/urls/" + shortURL);
+  } else {
+    res.status(403).send("Sorry, You are not the owner");
+  }
+});
 
 
 app.get("/urls/:id", (req, res) => {
@@ -210,25 +210,25 @@ app.get("/urls/:id", (req, res) => {
   } else if (!urlDatabase[shortURL]) {
     res.status(404).send('this is not valid URL');
   } else if (urlDatabase[shortURL]["userID"] === user_id) {
-        let templateVars = {
-          loggedUser: req.session.user_id,
-          shortURL: shortURL,
-          user_id: user_id,
-          users:urlDatabase,
-          username: users[user_id]
-        };
-        res.render('urls_show', templateVars);
+    let templateVars = {
+      loggedUser: req.session.user_id,
+      shortURL: shortURL,
+      user_id: user_id,
+      users: urlDatabase,
+      username: users[user_id]
+    };
+    res.render('urls_show', templateVars);
   } else {
-    res.status(403).send('Sorry, you are not the owner')
-    }
-  });
+    res.status(403).send('Sorry, you are not the owner');
+  }
+});
 
 
 
 app.get("/u/:id", (req, res) => {
   if (urlDatabase[req.params.id]) {
-  let longURL = urlDatabase[req.params.id]['url'];
-  res.redirect(longURL);
+    let longURL = urlDatabase[req.params.id]['url'];
+    res.redirect(longURL);
   } else {
     res.status(404).send('This url doesn\nt exist');
   }
@@ -237,8 +237,8 @@ app.get("/u/:id", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   if (urlDatabase[req.params.shortURL]) {
-  let longURL = urlDatabase[req.params.shortURL]['url'];
-  res.redirect(longURL);
+    let longURL = urlDatabase[req.params.shortURL]['url'];
+    res.redirect(longURL);
   }
 });
 
